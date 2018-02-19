@@ -20,8 +20,8 @@ En este apartado veremos las configuraciones básicas que se tiene que realizar 
 
 Actualizamos el listado de los repositorios y a continuación actualizaremos los paquetes.
  
-	    sudo apt update
-	    sudo apt upgrade
+	sudo apt update
+	sudo apt upgrade
 	    
 Le pondremos a cada servidor una dirección IP fija.
 
@@ -76,7 +76,7 @@ Actualizamos el listado del repositorio.
 
     sudo apt update
   
-  Procedemos con la instalación de Erlang.
+Procedemos con la instalación de Erlang.
   
 
     sudo apt-get install erlang
@@ -109,10 +109,11 @@ Creamos un usuario con su contraseña para poder acceder. En este caso el usuari
     sudo rabbitmqctl set_user_tags admin administrator
     sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
   
-  Ahora podemos irnos a un navegador web y poner la dirección IP de uno de los nodos junto al puerto 15672 y vemos cómo podemos acceder a la administración de RabbitMQ.
-Nodo 1: http://192.168.1.201:15672
-Nodo 2: http://192.168.1.202:15672
-Nodo 3: http://192.168.1.203:15672
+Ahora podemos irnos a un navegador web y poner la dirección IP de uno de los nodos junto al puerto 15672 y vemos cómo podemos acceder a la administración de RabbitMQ.
+
+ - Nodo 1: http://192.168.1.201:15672 
+ - Nodo 2: http://192.168.1.202:15672
+ - Nodo 3: http://192.168.1.203:15672
 
 
 Por defecto nuestro sistema se configura en modo desarrollo con un **File Descriptor = 1024**. Para entornos de producción se recomienda al menos aumentar ese valor a 65536.
@@ -233,7 +234,7 @@ Esta configuración está formada por varios apartados:
         maxconn 176670
         server rabbit01 192.168.1.201:5672 check fall 3 rise 2
         server rabbit02 192.168.1.202:5672 check fall 3 rise 2
-        server rabbit02 192.168.1.203:5672 check fall 3 rise 2
+        server rabbit03 192.168.1.203:5672 check fall 3 rise 2
         
 	listen rabbitmq_management
         bind 0.0.0.0:15672
@@ -241,7 +242,7 @@ Esta configuración está formada por varios apartados:
         balance roundrobin
         server rabbit01 192.168.1.201:15672 check fall 3 rise 2
         server rabbit02 192.168.1.202:15672 check fall 3 rise 2
-        server rabbit02 192.168.1.203:15672 check fall 3 rise 2
+        server rabbit03 192.168.1.203:15672 check fall 3 rise 2
         
     listen stats
 	    bind 192.168.1.210:8181
