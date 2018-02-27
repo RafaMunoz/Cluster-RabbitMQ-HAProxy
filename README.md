@@ -103,6 +103,11 @@ Habilitamos el plugin para acceder vía web.
 
     sudo rabbitmq-plugins enable rabbitmq_management
 
+En caso de que vayamos a utilizar federaciones necesitaremos habilitar el plugin **rabbitmq_federation** y **rabbitmq_federation_management**. Para ello debemos ejecutar los dos siguientes comandos en todos los nodos de RabbitMQ.
+
+    sudo rabbitmq-plugins enable rabbitmq_federation
+    sudo rabbitmq-plugins enable rabbitmq_federation_management
+
 Creamos un usuario con su contraseña para poder acceder. En este caso el usuario será **admin** y la contraseña **admin**.
 
     sudo rabbitmqctl add_user admin admin
