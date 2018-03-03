@@ -131,7 +131,16 @@ Buscamos el settings **LimitNOFILE**, le descomentamos y le ponemos el valor 655
 
     LimitNOFILE=65536
 
- Recargamos systemctl para que coja el cambio realizado.
+Como las peticiones las vamos a realizar a través de un proxy, si en la web de RabbitMQ queremos ver la dirección IP del cliente que realiza la conexión, en vez de la dirección IP del proxy necesitamos añadir un setting (**proxy_protocol = true**) en el fichero de configuración **rabbitmq.conf**.
+>Este setting le deberemos añadir en todos los nodos, y una vez puesto, el nodo solo aceptara conexiones desde HAProxy, no se podrán hacer peticiones directas a la dirección IP del nodo de RabbitMQ.
+
+    sudo nano /etc/rabbitmq/rabbitmq.conf
+
+Y añadimos:
+
+    proxy_protocol = true
+
+Recargamos systemctl para que coja el cambio realizado.
  
 
     sudo systemctl daemon-reload
@@ -237,9 +246,9 @@ Esta configuración está formada por varios apartados:
         timeout server 3h
         option clitcpka
         maxconn 176670
-        server rabbit01 192.168.1.201:5672 check fall 3 rise 2
-        server rabbit02 192.168.1.202:5672 check fall 3 rise 2
-        server rabbit03 192.168.1.203:5672 check fall 3 rise 2
+        server rabbit01 192.168.1.201:5672 check fall 3 rise 2 send-proxy-v2 maxconn 58890
+        server rabbit02 192.168.1.202:5672 check fall 3 rise 2 send-proxy-v2 maxconn 58890
+        server rabbit03 192.168.1.203:5672 check fall 3 rise 2 send-proxy-v2 maxconn 58890
         
 	listen rabbitmq_management
         bind 0.0.0.0:15672
@@ -264,6 +273,8 @@ Por defecto se realizan cada 2000ms pero es configurable.
 	Para no tener desconexiones de los clientes se configura un **timeout client** y un **timeout server** de 3 horas y añadimos la configuración **option clitcpka** para que se envíen paquetes de Heartbeat al lado del cliente y no se pierda la conexión.
 	
 	El setting **maxconn** se configura con 176670 ya que anteriormente hemos configurado cada nodo de RabbitMQ con 65536 y eso permite 58890 conexiones por nodo.
+
+    **send-proxy-v2** permite que a RabbitMQ le llegue la dirección IP del cliente que realiza la conexión, en vez de la dirección IP del HAProxy.
 
  2. El apartado de **rabbitmq_management** será para la gestión de RabbitMQ a través del navegador web.
 
